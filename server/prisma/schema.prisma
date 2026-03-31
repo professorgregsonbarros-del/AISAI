@@ -1,0 +1,77 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String       @id @default(uuid())
+  name        String
+  email       String       @unique
+  password    String
+  institution String?
+  role        String?      // "basic", "higher-ed", "pre-service"
+  createdAt   DateTime     @default(now())
+  plans       LessonPlan[]
+  materials   Material[]
+  reflections Reflection[]
+}
+
+model LessonPlan {
+  id             String       @id @default(uuid())
+  userId         String
+  user           User         @relation(fields: [userId], references: [id])
+  title          String
+  subject        String
+  level          String
+  objectives     String
+  studentProfile String?
+  conversation   Json
+  preClass       Json?
+  inClass        Json?
+  assessment     Json?
+  status         String       @default("draft")
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  materials      Material[]
+  reflections    Reflection[]
+}
+
+model Material {
+  id        String      @id @default(uuid())
+  userId    String
+  user      User        @relation(fields: [userId], references: [id])
+  planId    String?
+  plan      LessonPlan? @relation(fields: [planId], references: [id])
+  type      String      // "quiz", "summary", "video-script", "activity"
+  title     String
+  content   Json
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+}
+
+model Reflection {
+  id           String      @id @default(uuid())
+  userId       String
+  user         User        @relation(fields: [userId], references: [id])
+  planId       String?
+  plan         LessonPlan? @relation(fields: [planId], references: [id])
+  perceptions  String
+  difficulties String
+  improvements String
+  aiSuggestion String?
+  createdAt    DateTime    @default(now())
+}
+
+model TrailContent {
+  id        String   @id @default(uuid())
+  title     String
+  body      String
+  context   String   // "pre-class", "in-class", "assessment", "general"
+  duration  String   // "2 min", "5 min"
+  order     Int
+  createdAt DateTime @default(now())
+}
