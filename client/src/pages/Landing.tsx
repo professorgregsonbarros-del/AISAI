@@ -12,7 +12,7 @@ export default function Landing() {
           <img
             src="/Gemini_Generated_Image_8ii5l8ii5l8ii5l8-removebg-preview.png"
             alt="AI-SAI Logo"
-            className="w-12 h-[100px] t-contain"
+            className=" h-[100px] t-contain"
           />
         </div>
         <div className="flex gap-3">
