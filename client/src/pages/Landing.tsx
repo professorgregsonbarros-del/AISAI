@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { BookOpen, Sparkles, Brain, BarChart3, ArrowRight } from 'lucide-react';
+import {  Sparkles, Brain, BarChart3, ArrowRight } from 'lucide-react';
 
 export default function Landing() {
   const navigate = useNavigate();

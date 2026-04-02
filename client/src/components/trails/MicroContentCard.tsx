@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { BookOpen, Clock, ChevronDown, ChevronUp } from 'lucide-react';
+import {  Clock, ChevronDown, ChevronUp } from 'lucide-react';
 import { TrailContent } from '../../types';
 
 interface Props {
@@ -30,7 +30,7 @@ export default function MicroContentCard({ trail }: Props) {
         className="w-full flex items-start justify-between text-left"
       >
         <div className="flex items-start gap-2">
-          <BookOpen className="w-4 h-4 mt-0.5 opacity-60" />
+          {/* <BookOpen className="w-4 h-4 mt-0.5 opacity-60" /> */}
           <div>
             <h4 className="text-sm font-medium text-gray-800">{trail.title}</h4>
             <div className="flex items-center gap-2 mt-1">

@@ -1,6 +1,6 @@
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { LogOut, BookOpen } from 'lucide-react';
+import { LogOut } from 'lucide-react';
 
 export default function Navbar() {
   const { user, logout } = useAuth();
@@ -17,9 +17,9 @@ export default function Navbar() {
         className="flex items-center gap-2 cursor-pointer"
         onClick={() => navigate('/dashboard')}
       >
-        <BookOpen className="w-8 h-8 text-indigo-600" />
+        {/* <BookOpen className="w-8 h-8 text-indigo-600" />
         <span className="text-xl font-bold text-gray-800">AI-SAI</span>
-        <span className="text-sm text-gray-500 hidden sm:inline">Teacher Hub</span>
+        <span className="text-sm text-gray-500 hidden sm:inline">Teacher Hub</span> */}
       </div>
 
       {user && (
