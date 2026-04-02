@@ -8,10 +8,16 @@ export default function Landing() {
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-blue-50">
       {/* Hero */}
       <header className="px-6 py-4 flex items-center justify-between max-w-6xl mx-auto">
-        <div className="flex items-center gap-2">
-          <BookOpen className="w-8 h-8 text-indigo-600" />
-          <span className="text-xl font-bold text-gray-800">AI-SAI</span>
-          <span className="text-sm text-gray-500">Teacher Hub</span>
+        <div className="flex items-center gap-3">
+          <img
+            src="/Gemini_Generated_Image_8ii5l8ii5l8ii5l8-removebg-preview.png"
+            alt="AI-SAI Logo"
+            className="w-12 h-12 object-contain"
+          />
+          <div className="flex items-center gap-2">
+            <span className="text-xl font-bold text-gray-800">AI-SAI</span>
+            <span className="text-sm text-gray-500">Teacher Hub</span>
+          </div>
         </div>
         <div className="flex gap-3">
           <button
