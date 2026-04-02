@@ -14,10 +14,6 @@ export default function Landing() {
             alt="AI-SAI Logo"
             className="w-12 h-12 object-contain"
           />
-          <div className="flex items-center gap-2">
-            <span className="text-xl font-bold text-gray-800">AI-SAI</span>
-            <span className="text-sm text-gray-500">Teacher Hub</span>
-          </div>
         </div>
         <div className="flex gap-3">
           <button
