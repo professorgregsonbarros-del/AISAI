@@ -11,6 +11,7 @@
     "build:server": "cd server && npm run build",
     "build": "npm run build:client && npm run build:server",
     "start": "cd server && npm start",
+    "migrate": "node migrate.js",
     "db:migrate": "cd server && npm run db:migrate",
     "db:push": "cd server && npm run db:push",
     "db:seed": "cd server && npm run db:seed"
