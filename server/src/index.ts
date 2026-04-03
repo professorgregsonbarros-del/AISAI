@@ -23,13 +23,14 @@ if (missingEnvVars.length > 0) {
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// CORS configuration - allow requests from frontend domain
-const corsOptions = {
-  origin: process.env.FRONTEND_URL || '*',
+// CORS configuration - allow all origins for now
+app.use(cors({
+  origin: true, // Allows all origins
   credentials: true,
-};
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}));
 
-app.use(cors(corsOptions));
 app.use(express.json({ limit: '10mb' }));
 
 // API Routes
