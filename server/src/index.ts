@@ -49,8 +49,9 @@ if (process.env.NODE_ENV === 'production') {
   const clientBuildPath = path.join(__dirname, '../../client/dist');
   app.use(express.static(clientBuildPath));
 
-  // Handle React routing, return all requests to React app
-  app.get('*', (_req, res) => {
+  // Handle React routing - catch all non-API routes and return React app
+  // Using regex instead of '*' for Express 5.x compatibility
+  app.get(/^\/(?!api).*/, (_req, res) => {
     res.sendFile(path.join(clientBuildPath, 'index.html'));
   });
 }
