@@ -1,0 +1,16 @@
+[phases.setup]
+nixPkgs = ["nodejs_20", "openssl"]
+
+[phases.install]
+cmds = ["npm install", "cd server && npm install", "cd client && npm install"]
+
+[phases.build]
+cmds = ["npm run build"]
+
+[variables]
+ANTHROPIC_API_KEY = "build-placeholder"
+DATABASE_URL = "postgresql://placeholder"
+JWT_SECRET = "build-placeholder"
+
+[start]
+cmd = "npm start"
