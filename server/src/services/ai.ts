@@ -1,9 +1,8 @@
 import Anthropic from '@anthropic-ai/sdk';
 
 function getClient() {
-  const keyName = 'ANTHROPIC_API_KEY';
   return new Anthropic({
-    apiKey: process.env[keyName] || '',
+    apiKey: process.env['AI_API_KEY'] || '',
   });
 }
 
