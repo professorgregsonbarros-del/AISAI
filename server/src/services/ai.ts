@@ -1,8 +1,9 @@
 import Anthropic from '@anthropic-ai/sdk';
 
 function getClient() {
+  const keyName = 'ANTHROPIC_API_KEY';
   return new Anthropic({
-    apiKey: process.env.ANTHROPIC_API_KEY || '',
+    apiKey: process.env[keyName] || '',
   });
 }
 
@@ -50,7 +51,7 @@ export interface ChatMessage {
 
 export async function chat(messages: ChatMessage[]): Promise<string> {
   const response = await getClient().messages.create({
-    model: 'claude-sonnet-4-20250514',
+    model: 'claude-sonnet-4-5',
     max_tokens: 2048,
     system: SYSTEM_PROMPT,
     messages: messages.map(m => ({
@@ -90,7 +91,7 @@ Retorne em JSON: { "steps": [{ "step": 1, "instruction": "...", "duration": "...
   };
 
   const response = await getClient().messages.create({
-    model: 'claude-sonnet-4-20250514',
+    model: 'claude-sonnet-4-5',
     max_tokens: 2048,
     system: 'Você é um assistente pedagógico especializado em criar materiais educacionais para a metodologia Sala de Aula Invertida. Responda sempre em português brasileiro. Retorne APENAS o JSON solicitado, sem texto adicional.',
     messages: [{ role: 'user', content: typePrompts[type] || typePrompts.summary }],
@@ -115,7 +116,7 @@ MELHORIAS SUGERIDAS PELO PROFESSOR: ${improvements}
 Com base nessas informações, ofereça sugestões práticas e encorajadoras para melhorar a próxima aplicação. Seja específico e baseado em evidências da metodologia SAI.`;
 
   const response = await getClient().messages.create({
-    model: 'claude-sonnet-4-20250514',
+    model: 'claude-sonnet-4-5',
     max_tokens: 1024,
     system: 'Você é um mentor pedagógico especializado em Sala de Aula Invertida. Ofereça sugestões práticas, encorajadoras e baseadas em evidências. Responda em português brasileiro.',
     messages: [{ role: 'user', content: prompt }],
