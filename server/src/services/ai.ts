@@ -1,7 +1,7 @@
 import Anthropic from '@anthropic-ai/sdk';
 
 function getClient() {
-  const key = process.env['ANTHROPIC_API_KEY'] || '';
+  const key = process.env['AI_API_KEY'] || process.env['ANTHROPIC_API_KEY'] || '';
   console.log('API KEY present:', key ? `yes (${key.slice(0, 10)}...)` : 'NO - EMPTY');
   return new Anthropic({
     apiKey: key,
