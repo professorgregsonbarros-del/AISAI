@@ -16,6 +16,9 @@
     "db:push": "cd server && npm run db:push",
     "db:seed": "cd server && npm run db:seed"
   },
+  "engines": {
+    "node": ">=22.12.0"
+  },
   "devDependencies": {
     "concurrently": "^8.2.2"
   }
