@@ -8,7 +8,7 @@ import materialRoutes from './routes/materials';
 import reflectionRoutes from './routes/reflections';
 import trailRoutes from './routes/trails';
 
-dotenv.config({ path: path.resolve(__dirname, '../../.env') });
+dotenv.config({ path: path.resolve(__dirname, '../../.env'), override: false });
 
 // Validate required environment variables
 const requiredEnvVars = ['DATABASE_URL', 'JWT_SECRET'];
