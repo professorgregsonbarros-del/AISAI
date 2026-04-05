@@ -10,7 +10,7 @@ cmds = ["npm run build"]
 [variables]
 DATABASE_URL = "postgresql://placeholder"
 JWT_SECRET = "build-placeholder"
-AI_API_KEY = "sk-ant-placeholder"
+ANTHROPIC_API_KEY = "sk-ant-placeholder"
 
 [start]
 cmd = "npm start"
