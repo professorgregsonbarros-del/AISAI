@@ -45,8 +45,9 @@ router.post('/', authenticate, requireAdmin, async (req: AuthRequest, res: Respo
 router.put('/:id', authenticate, requireAdmin, async (req: AuthRequest, res: Response) => {
   try {
     const { title, body, context, duration, order } = req.body;
+    const id = req.params.id as string;
     const trail = await prisma.trailContent.update({
-      where: { id: req.params.id },
+      where: { id },
       data: {
         ...(title && { title }),
         ...(body && { body }),
@@ -65,7 +66,7 @@ router.put('/:id', authenticate, requireAdmin, async (req: AuthRequest, res: Res
 // ADMIN: Delete trail content
 router.delete('/:id', authenticate, requireAdmin, async (req: AuthRequest, res: Response) => {
   try {
-    await prisma.trailContent.delete({ where: { id: req.params.id } });
+    await prisma.trailContent.delete({ where: { id: req.params.id as string } });
     res.json({ message: 'Trilha excluída' });
   } catch (error) {
     console.error('Delete trail error:', error);
