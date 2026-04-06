@@ -4,6 +4,7 @@ import { LessonPlan } from '../../types';
 import { FileText, Search, Plus, Eye, Trash2, Filter, Download } from 'lucide-react';
 import PlanEditor from '../lesson-plan/PlanEditor';
 import { exportToPDF } from '../../services/pdf';
+import { useToast } from '../ui/Toast';
 
 interface Props {
   onNewPlan: () => void;
@@ -15,6 +16,7 @@ export default function PlansList({ onNewPlan }: Props) {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [selectedPlan, setSelectedPlan] = useState<LessonPlan | null>(null);
+  const toast = useToast();
 
   useEffect(() => {
     loadPlans();
@@ -49,8 +51,10 @@ export default function PlansList({ onNewPlan }: Props) {
       await plansAPI.delete(id);
       setPlans(plans.filter(p => p.id !== id));
       if (selectedPlan?.id === id) setSelectedPlan(null);
+      toast.success('Plano excluído.');
     } catch (err) {
       console.error('Error deleting plan:', err);
+      toast.error('Erro ao excluir o plano.');
     }
   };
 

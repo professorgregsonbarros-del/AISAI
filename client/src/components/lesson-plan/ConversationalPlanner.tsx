@@ -6,6 +6,7 @@ import PlanEditor from './PlanEditor';
 import MicroContentCard from '../trails/MicroContentCard';
 import { trailsAPI } from '../../services/api';
 import { TrailContent } from '../../types';
+import { useToast } from '../ui/Toast';
 
 interface Props {
   planId?: string;
@@ -23,6 +24,7 @@ export default function ConversationalPlanner({ planId, initialMessages, onPlanS
   const [currentPhase, setCurrentPhase] = useState<string>('general');
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const toast = useToast();
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -61,6 +63,7 @@ export default function ConversationalPlanner({ planId, initialMessages, onPlanS
       }
     } catch (err) {
       setMessages([...newMessages, { role: 'assistant', content: 'Desculpe, ocorreu um erro. Tente novamente.' }]);
+      toast.error('Erro ao conectar com a IA. Verifique sua conexão.');
     } finally {
       setLoading(false);
     }
@@ -96,11 +99,13 @@ export default function ConversationalPlanner({ planId, initialMessages, onPlanS
         setCurrentPlanId(res.data.id);
       }
       setSaveStatus('saved');
+      toast.success('Plano salvo com sucesso!');
       onPlanSaved?.();
       setTimeout(() => setSaveStatus('idle'), 3000);
     } catch (err) {
       console.error('Error saving plan:', err);
       setSaveStatus('error');
+      toast.error('Erro ao salvar o plano. Tente novamente.');
       setTimeout(() => setSaveStatus('idle'), 3000);
     } finally {
       setLoading(false);

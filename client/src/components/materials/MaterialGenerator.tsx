@@ -3,6 +3,7 @@ import { FileText, HelpCircle, Video, Users, Plus, Loader2 } from 'lucide-react'
 import { materialsAPI, plansAPI } from '../../services/api';
 import { Material, LessonPlan } from '../../types';
 import MaterialEditor from './MaterialEditor';
+import { useToast } from '../ui/Toast';
 
 interface Props {
   onGenerated?: () => void;
@@ -15,6 +16,7 @@ export default function MaterialGenerator({ onGenerated }: Props) {
   const [generating, setGenerating] = useState(false);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('');
+  const toast = useToast();
 
   useEffect(() => {
     loadData();
@@ -30,6 +32,7 @@ export default function MaterialGenerator({ onGenerated }: Props) {
       setMaterials(matsRes.data);
     } catch (err) {
       console.error('Error loading data:', err);
+      toast.error('Erro ao carregar dados.');
     } finally {
       setLoading(false);
     }
@@ -38,12 +41,15 @@ export default function MaterialGenerator({ onGenerated }: Props) {
   const generate = async (type: string) => {
     if (!selectedPlan) return;
     setGenerating(true);
+    toast.info('Gerando material com IA...');
     try {
       await materialsAPI.generate(type, selectedPlan);
       await loadData();
+      toast.success('Material gerado com sucesso!');
       onGenerated?.();
     } catch (err) {
       console.error('Error generating material:', err);
+      toast.error('Erro ao gerar material. Verifique os créditos da IA.');
     } finally {
       setGenerating(false);
     }
@@ -53,8 +59,10 @@ export default function MaterialGenerator({ onGenerated }: Props) {
     try {
       await materialsAPI.update(id, { content });
       setMaterials(mats => mats.map(m => m.id === id ? { ...m, content } : m));
+      toast.success('Material atualizado.');
     } catch (err) {
       console.error('Error updating material:', err);
+      toast.error('Erro ao atualizar material.');
     }
   };
 
@@ -62,8 +70,10 @@ export default function MaterialGenerator({ onGenerated }: Props) {
     try {
       await materialsAPI.delete(id);
       setMaterials(mats => mats.filter(m => m.id !== id));
+      toast.success('Material excluído.');
     } catch (err) {
       console.error('Error deleting material:', err);
+      toast.error('Erro ao excluir material.');
     }
   };
 
