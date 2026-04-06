@@ -21,6 +21,7 @@ export default function ConversationalPlanner({ planId, initialMessages, onPlanS
   const [currentPlanId, setCurrentPlanId] = useState(planId);
   const [trails, setTrails] = useState<TrailContent[]>([]);
   const [currentPhase, setCurrentPhase] = useState<string>('general');
+  const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -68,6 +69,7 @@ export default function ConversationalPlanner({ planId, initialMessages, onPlanS
   const savePlan = async () => {
     if (!generatedPlan) return;
     setLoading(true);
+    setSaveStatus('saving');
     try {
       if (currentPlanId) {
         await plansAPI.update(currentPlanId, {
@@ -93,9 +95,13 @@ export default function ConversationalPlanner({ planId, initialMessages, onPlanS
         });
         setCurrentPlanId(res.data.id);
       }
+      setSaveStatus('saved');
       onPlanSaved?.();
+      setTimeout(() => setSaveStatus('idle'), 3000);
     } catch (err) {
       console.error('Error saving plan:', err);
+      setSaveStatus('error');
+      setTimeout(() => setSaveStatus('idle'), 3000);
     } finally {
       setLoading(false);
     }
@@ -195,14 +201,18 @@ export default function ConversationalPlanner({ planId, initialMessages, onPlanS
           <div className="bg-green-50 border border-green-200 rounded-xl p-4">
             <div className="flex items-center justify-between mb-3">
               <h3 className="font-semibold text-green-800">Plano Gerado!</h3>
-              <button
-                onClick={savePlan}
-                disabled={loading}
-                className="flex items-center gap-1 px-3 py-1.5 bg-green-600 text-white text-sm rounded-lg hover:bg-green-700 disabled:opacity-50"
-              >
-                <Save className="w-4 h-4" />
-                Salvar
-              </button>
+              <div className="flex items-center gap-2">
+                {saveStatus === 'saved' && <span className="text-xs text-green-700 font-medium">Salvo!</span>}
+                {saveStatus === 'error' && <span className="text-xs text-red-600 font-medium">Erro ao salvar</span>}
+                <button
+                  onClick={savePlan}
+                  disabled={loading || saveStatus === 'saving'}
+                  className="flex items-center gap-1 px-3 py-1.5 bg-green-600 text-white text-sm rounded-lg hover:bg-green-700 disabled:opacity-50"
+                >
+                  <Save className="w-4 h-4" />
+                  {saveStatus === 'saving' ? 'Salvando...' : saveStatus === 'saved' ? 'Salvo' : 'Salvar'}
+                </button>
+              </div>
             </div>
             <PlanEditor plan={generatedPlan} onChange={setGeneratedPlan} />
           </div>
