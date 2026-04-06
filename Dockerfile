@@ -23,4 +23,4 @@ RUN cd server && npx tsc
 
 EXPOSE 3001
 
-CMD ["npm", "start"]
+CMD cd server && npx prisma db push --accept-data-loss && cd .. && npm start
