@@ -15,6 +15,7 @@ model User {
   password    String
   institution String?
   role        String?      // "basic", "higher-ed", "pre-service"
+  isAdmin     Boolean      @default(false)
   createdAt   DateTime     @default(now())
   plans       LessonPlan[]
   materials   Material[]

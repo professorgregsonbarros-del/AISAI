@@ -2,7 +2,7 @@ import { Router, Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { authenticate, AuthRequest } from '../middleware/auth';
+import { authenticate, requireAdmin, AuthRequest } from '../middleware/auth';
 
 const router = Router();
 const prisma = new PrismaClient();
@@ -79,13 +79,32 @@ router.get('/me', authenticate, async (req: AuthRequest, res: Response) => {
   try {
     const user = await prisma.user.findUnique({
       where: { id: req.userId },
-      select: { id: true, name: true, email: true, institution: true, role: true, createdAt: true },
+      select: { id: true, name: true, email: true, institution: true, role: true, isAdmin: true, createdAt: true },
     });
     if (!user) return res.status(404).json({ error: 'Usuário não encontrado' });
     res.json(user);
   } catch (error) {
     console.error('Me error:', error);
     res.status(500).json({ error: 'Erro ao buscar usuário' });
+  }
+});
+
+// ADMIN: promote user to admin (requires ADMIN_SECRET header)
+router.post('/make-admin', async (req: Request, res: Response) => {
+  try {
+    const { email } = req.body;
+    const secret = req.headers['x-admin-secret'];
+    if (secret !== process.env.ADMIN_SECRET) {
+      return res.status(403).json({ error: 'Segredo inválido' });
+    }
+    const user = await prisma.user.update({
+      where: { email },
+      data: { isAdmin: true },
+      select: { id: true, name: true, email: true, isAdmin: true },
+    });
+    res.json(user);
+  } catch (error) {
+    res.status(500).json({ error: 'Erro ao promover usuário' });
   }
 });
 
