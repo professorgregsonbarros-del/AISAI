@@ -44,15 +44,33 @@ export default function ConversationalPlanner({ planId, initialMessages, onPlanS
     setLoading(true);
 
     try {
-      const res = await plansAPI.chat(newMessages, currentPlanId);
+      // Auto-create draft plan on first message
+      let activePlanId = currentPlanId;
+      if (!activePlanId) {
+        const draft = await plansAPI.create({
+          title: input.trim().split(' ').slice(0, 6).join(' '),
+          subject: input.trim().split(' ').slice(0, 5).join(' '),
+          level: '',
+          objectives: '',
+          conversation: newMessages,
+          status: 'draft',
+        });
+        activePlanId = draft.data.id;
+        setCurrentPlanId(activePlanId);
+      }
+
+      const res = await plansAPI.chat(newMessages, activePlanId);
       const assistantMessage: ChatMessage = { role: 'assistant', content: res.data.message };
-      setMessages([...newMessages, assistantMessage]);
+      const allMessages = [...newMessages, assistantMessage];
+      setMessages(allMessages);
+
+      // Auto-save conversation after every exchange
+      await plansAPI.update(activePlanId!, { conversation: allMessages });
 
       if (res.data.generatedPlan) {
         setGeneratedPlan(res.data.generatedPlan);
       }
 
-      // Detect phase context for trail suggestions
       const lastMsg = res.data.message.toLowerCase();
       if (lastMsg.includes('pré-aula') || lastMsg.includes('antes da aula')) {
         setCurrentPhase('pre-class');
