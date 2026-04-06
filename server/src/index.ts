@@ -12,9 +12,7 @@ const requiredEnvVars = ['DATABASE_URL', 'JWT_SECRET'];
 const missingEnvVars = requiredEnvVars.filter(varName => !process.env[varName]);
 
 if (missingEnvVars.length > 0) {
-  console.error('❌ Missing required environment variables:', missingEnvVars.join(', '));
-  console.error('Please set these in your Railway dashboard under Variables tab');
-  process.exit(1);
+  console.warn('⚠️ Missing environment variables:', missingEnvVars.join(', '));
 }
 
 const app = express();
