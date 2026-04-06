@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { plansAPI } from '../../services/api';
 import { LessonPlan } from '../../types';
-import { FileText, Search, Plus, Eye, Trash2, Filter } from 'lucide-react';
+import { FileText, Search, Plus, Eye, Trash2, Filter, Download } from 'lucide-react';
 import PlanEditor from '../lesson-plan/PlanEditor';
+import { exportToPDF } from '../../services/pdf';
 
 interface Props {
   onNewPlan: () => void;
@@ -56,13 +57,19 @@ export default function PlansList({ onNewPlan }: Props) {
   if (selectedPlan) {
     return (
       <div>
-        <button
-          onClick={() => setSelectedPlan(null)}
-          className="text-sm text-indigo-600 hover:underline mb-4"
-        >
-          &larr; Voltar para lista
-        </button>
-        <div className="bg-white border border-gray-200 rounded-xl p-6">
+        <div className="flex items-center justify-between mb-4">
+          <button onClick={() => setSelectedPlan(null)} className="text-sm text-indigo-600 hover:underline">
+            &larr; Voltar para lista
+          </button>
+          <button
+            onClick={() => exportToPDF('plan-pdf-content', selectedPlan.title)}
+            className="flex items-center gap-1 px-3 py-1.5 bg-indigo-600 text-white text-sm rounded-lg hover:bg-indigo-700"
+          >
+            <Download className="w-4 h-4" />
+            Exportar PDF
+          </button>
+        </div>
+        <div id="plan-pdf-content" className="bg-white border border-gray-200 rounded-xl p-6">
           <h2 className="text-xl font-bold text-gray-800 mb-1">{selectedPlan.title}</h2>
           <p className="text-sm text-gray-500 mb-4">
             {selectedPlan.subject} · {selectedPlan.level} · {new Date(selectedPlan.updatedAt).toLocaleDateString('pt-BR')}

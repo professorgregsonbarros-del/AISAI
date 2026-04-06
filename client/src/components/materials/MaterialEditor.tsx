@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { Edit3, Trash2, Check, X, HelpCircle, FileText, Video, Users } from 'lucide-react';
+import { Edit3, Trash2, Check, X, HelpCircle, FileText, Video, Users, Download } from 'lucide-react';
 import { Material } from '../../types';
+import { exportToPDF } from '../../services/pdf';
 
 interface Props {
   material: Material;
@@ -39,7 +40,7 @@ export default function MaterialEditor({ material, onUpdate, onDelete }: Props) 
   };
 
   return (
-    <div className={`border rounded-xl p-4 ${typeColors[material.type] || 'border-gray-200 bg-white'}`}>
+    <div id={`material-${material.id}`} className={`border rounded-xl p-4 ${typeColors[material.type] || 'border-gray-200 bg-white'}`}>
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <Icon className="w-5 h-5 opacity-70" />
@@ -57,6 +58,9 @@ export default function MaterialEditor({ material, onUpdate, onDelete }: Props) 
             </>
           ) : (
             <>
+              <button onClick={() => exportToPDF(`material-${material.id}`, material.title)} className="p-1.5 text-gray-400 hover:bg-white/50 rounded" title="Exportar PDF">
+                <Download className="w-4 h-4" />
+              </button>
               <button onClick={() => setEditing(true)} className="p-1.5 text-gray-400 hover:bg-white/50 rounded">
                 <Edit3 className="w-4 h-4" />
               </button>
