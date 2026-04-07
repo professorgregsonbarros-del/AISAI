@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
 import { UserPlus, User, Mail, Lock, Building, GraduationCap } from 'lucide-react';
+import { useToast } from '../ui/Toast';
 
 export default function RegisterForm() {
   const { register } = useAuth();
@@ -13,18 +14,25 @@ export default function RegisterForm() {
     institution: '',
     role: '',
   });
-  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const toast = useToast();
+
+  const getErrorMessage = (error: string) => {
+    if (error.includes('Email já cadastrado') || error.includes('já cadastrado')) {
+      return 'Este email já está cadastrado. Faça login ou use outro email.';
+    }
+    return error || 'Erro ao criar conta. Tente novamente.';
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
     setLoading(true);
     try {
       await register(form.name, form.email, form.password, form.institution, form.role);
       navigate('/dashboard');
     } catch (err: any) {
-      setError(err.response?.data?.error || 'Erro ao criar conta');
+      const msg = getErrorMessage(err.response?.data?.error || '');
+      toast.error(msg);
     } finally {
       setLoading(false);
     }
@@ -41,10 +49,6 @@ export default function RegisterForm() {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          {error && (
-            <div className="bg-red-50 text-red-600 px-4 py-3 rounded-lg text-sm">{error}</div>
-          )}
-
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Nome completo</label>
             <div className="relative">

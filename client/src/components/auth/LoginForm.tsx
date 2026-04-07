@@ -2,24 +2,35 @@ import { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
 import { LogIn, Mail, Lock } from 'lucide-react';
+import { useToast } from '../ui/Toast';
 
 export default function LoginForm() {
   const { login } = useAuth();
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const toast = useToast();
+
+  const getErrorMessage = (error: string) => {
+    if (error.includes('Credenciais inválidas')) {
+      return 'Email ou senha incorretos. Verifique e tente novamente.';
+    }
+    if (error.includes('não encontrado')) {
+      return 'Email não encontrado. Verifique ou crie uma conta.';
+    }
+    return error || 'Erro ao fazer login. Tente novamente.';
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
     setLoading(true);
     try {
       await login(email, password);
       navigate('/dashboard');
     } catch (err: any) {
-      setError(err.response?.data?.error || 'Erro ao fazer login');
+      const msg = getErrorMessage(err.response?.data?.error || '');
+      toast.error(msg);
     } finally {
       setLoading(false);
     }
@@ -34,10 +45,6 @@ export default function LoginForm() {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-5">
-          {error && (
-            <div className="bg-red-50 text-red-600 px-4 py-3 rounded-lg text-sm">{error}</div>
-          )}
-
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
             <div className="relative">
