@@ -8,7 +8,10 @@ export function exportToPDF(elementId: string, filename: string) {
   const styles = Array.from(document.styleSheets)
     .map(sheet => {
       try {
-        return Array.from(sheet.cssRules).map(rule => rule.cssText).join('\n');
+        return Array.from(sheet.cssRules)
+          .map(rule => rule.cssText)
+          .filter(text => !text.includes('oklch') && !text.includes('oklab'))
+          .join('\n');
       } catch {
         return '';
       }
