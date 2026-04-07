@@ -64,9 +64,13 @@ const trailContents = [
 async function main() {
   console.log('Seeding trail content...');
 
-  for (const trail of trailContents) {
-    await prisma.trailContent.create({ data: trail });
+  const existing = await prisma.trailContent.count();
+  if (existing > 0) {
+    console.log(`Trails already seeded (${existing} items). Skipping.`);
+    return;
   }
+
+  await prisma.trailContent.createMany({ data: trailContents });
 
   console.log(`Seeded ${trailContents.length} trail content items.`);
 }
