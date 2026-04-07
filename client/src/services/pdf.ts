@@ -1,31 +1,46 @@
-import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
-
-export async function exportToPDF(elementId: string, filename: string) {
+export function exportToPDF(elementId: string, filename: string) {
   const element = document.getElementById(elementId);
   if (!element) return;
 
-  const canvas = await html2canvas(element, { scale: 2, useCORS: true });
-  const imgData = canvas.toDataURL('image/png');
-  const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+  const printWindow = window.open('', '_blank');
+  if (!printWindow) return;
 
-  const pageWidth = pdf.internal.pageSize.getWidth();
-  const pageHeight = pdf.internal.pageSize.getHeight();
-  const imgWidth = pageWidth - 20;
-  const imgHeight = (canvas.height * imgWidth) / canvas.width;
+  const styles = Array.from(document.styleSheets)
+    .map(sheet => {
+      try {
+        return Array.from(sheet.cssRules).map(rule => rule.cssText).join('\n');
+      } catch {
+        return '';
+      }
+    })
+    .join('\n');
 
-  let heightLeft = imgHeight;
-  let position = 10;
-
-  pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
-  heightLeft -= pageHeight - 20;
-
-  while (heightLeft > 0) {
-    position = heightLeft - imgHeight + 10;
-    pdf.addPage();
-    pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
-    heightLeft -= pageHeight - 20;
-  }
-
-  pdf.save(`${filename}.pdf`);
+  printWindow.document.write(`
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <meta charset="UTF-8">
+        <title>${filename}</title>
+        <style>
+          ${styles}
+          body { font-family: system-ui, sans-serif; padding: 20px; background: white; }
+          @media print {
+            body { padding: 0; }
+            button, .no-print { display: none !important; }
+          }
+        </style>
+      </head>
+      <body>
+        <h2 style="margin-bottom:16px;color:#1e293b;">${filename}</h2>
+        ${element.innerHTML}
+        <script>
+          window.onload = function() {
+            window.print();
+            window.onafterprint = function() { window.close(); };
+          };
+        <\/script>
+      </body>
+    </html>
+  `);
+  printWindow.document.close();
 }
